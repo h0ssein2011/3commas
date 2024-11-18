@@ -57,7 +57,7 @@ st.markdown(
     4. <span style='font-size: 18px; font-weight: bold;'>Benchmarking Analysis</span>: <span style='font-size: 18px;'>This page presents a benchmark analysis of global volume versus 3Commas exchange volume by account type. For instance, it compares Binance's global exchange volume with Binance's volume on 3Commas.<br>
    <br>Notes:
     <li> To connect global volumes to 3commas volums I did a preprocessing step to create an id for each volume to be able to join them together. </li>
-    <li>Since the volumes are not on the same scale, 3Commas volumes are presented on the right axis to better illustrate the trend.</li></span>
+    <li>Since the volumes are not on the same scale, 3Commas volumes are presented on the right axis to better show the trend.</li></span>
 
     ### Please Use the Sidebar to Explore Further
     ### Thank you
