@@ -29,10 +29,10 @@ st.markdown(
     def preprocess_data(df):
         # Exclude paper exchanges
         df = df[~df['account_type'].str.lower().str.contains("paper")]
-        # Remove 'Account::' and ' Account' from account_type
+        # Remove extra text from account_type column
         df['account_type'] = df['account_type'].replace({'Account::': '', 'Accounts::': '', 'Account': '', 'Coin': ''}, regex=True)
 
-        # Convert the month column to datetime format
+        # Convert month to datetime format
         df['month'] = pd.to_datetime(df['month'])
 
         # Define the volume categories
