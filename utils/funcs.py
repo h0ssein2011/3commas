@@ -16,7 +16,6 @@ def load_logo():
     return None
 
 
-
 # Preprocessing function
 def preprocess_data(df):
     # Filter out paper exchanges

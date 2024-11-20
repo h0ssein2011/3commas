@@ -23,7 +23,7 @@ df, df_monthly = preprocess_data(df)
 # Streamlit Application
 st.markdown("""
     <div style='background-color: #00B0A3; padding: 20px; border-radius: 10px;'>
-        <h1 style='text-align: center; color: white;'>User Analysis Dashboard</h1>
+        <h1 style='text-align: center; color: white;'>User Analysis</h1>
     </div>
 """, unsafe_allow_html=True)
 
