@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 
 from pathlib import Path
 
-from utils.funcs import preprocess_data, clean_accounts,load_logo
+from utils.funcs import preprocess_data, clean_accounts,load_logo,format_number
 
 load_logo()
 # Set wide layout for the app
@@ -68,53 +68,59 @@ selected_account_types = st.sidebar.multiselect('Select Account Type', benchmark
 
 # Filter data based on selections
 filtered_data = benchmark[(benchmark['month'].isin(selected_month)) & (benchmark['account_type'].isin(selected_account_types))]
+filtered_data = filtered_data.groupby('month').agg({'usd_amount_global':'sum','usd_amount_3commas':'sum'}).reset_index()
+filtered_data['month'] = pd.to_datetime(filtered_data['month'])
+filtered_data = filtered_data.sort_values(by='month')
 
-# Plotting Simple Bar and Line Charts for Each Account Type
-account_types = filtered_data['account_type'].unique()
+dual_axis_fig = go.Figure()
+dual_axis_fig.add_trace(go.Scatter(
+    x=filtered_data['month'].dt.strftime('%b %Y'),
+    y=filtered_data['usd_amount_global'],
+    text=filtered_data['usd_amount_global'].apply(format_number),
+    mode='lines+markers+text',
+    name='Global Volume',
+    marker=dict(color='#a7abb8 ', line=dict(width=0.5, color='white')),
+    line=dict(color='#a7abb8', dash='dash'),
+    textposition ='top center'
 
-for account in account_types:
-    account_data = filtered_data[filtered_data['account_type'] == account]
-    dual_axis_fig = go.Figure()
-    dual_axis_fig.add_trace(go.Bar(
-        x=account_data['month'],
-        y=account_data['usd_amount_global'],
-        name='Global Volume',
-        marker=dict(color='#17a2b8', line=dict(width=0.5, color='white'))
-    ))
-    dual_axis_fig.add_trace(go.Scatter(
-        x=account_data['month'],
-        y=account_data['usd_amount_3commas'],
-        name='3Commas Volume',
-        mode='lines+markers',
-        line=dict(color='#ff7f0e', width=2),
-        marker=dict(color='#ff7f0e', size=6),
-        yaxis='y2'
-    ))
+))
+dual_axis_fig.add_trace(go.Scatter(
+    x=filtered_data['month'].dt.strftime('%b %Y'),
+    y=filtered_data['usd_amount_3commas'],
+    text=filtered_data['usd_amount_3commas'].apply(format_number),
+    name='3Commas Volume',
+    mode='lines+markers+text',
+    line=dict(color='#17a2b8', width=2),
+    marker=dict(color='#17a2b8', size=6),
+    yaxis='y2',
+    textposition ='bottom center'
 
-    dual_axis_fig.update_layout(
-    title=f'3Commas vs Global Exchange Volumes for Account Type: {account}',
-    title_font=dict(size=24, family='Arial', color='#007b7f'),
-    xaxis_title='Month',
-    yaxis=dict(
-        title='Global Volume (USD)',
-        title_font=dict(size=16, family='Arial', color='#007b7f'),
-        tickfont=dict(size=14, family='Arial', color='#007b7f'),
-        side='left'
-    ),
-    yaxis2=dict(
-        title='3Commas Volume (USD)',
-        title_font=dict(size=12, family='Arial', color='#ff7f0e'),
-        tickfont=dict(size=14, family='Arial', color='#ff7f0e'),
-        overlaying='y',
-        side='right'
-    ),
-    legend_title='Volume Type',
-    legend=dict(
-        font=dict(size=14, family='Arial', color='#007b7f'),
-        x=0,y=1,xanchor='left', yanchor='top'
-    ),
-    template='plotly_white'
+))
+
+dual_axis_fig.update_layout(
+title=f'3Commas vs Global Exchange Volumes for Account Type:',
+title_font=dict(size=24, family='Arial', color='#a7abb8'),
+xaxis_title='Month',
+yaxis=dict(
+    title='Global Volume (USD)',
+    title_font=dict(size=16, family='Arial', color='#007b7f'),
+    tickfont=dict(size=14, family='Arial', color='#007b7f'),
+    side='left'
+),
+yaxis2=dict(
+    title='3Commas Volume (USD)',
+    title_font=dict(size=12, family='Arial', color='#17a2b8'),
+    tickfont=dict(size=14, family='Arial', color='#17a2b8'),
+    overlaying='y',
+    side='right'
+),
+legend_title='Volume Type',
+legend=dict(
+    font=dict(size=14, family='Arial', color='#a7abb8'),
+    x=0,y=1,xanchor='left', yanchor='top'
+),
+template='plotly_white'
 )
 
 
-    st.plotly_chart(dual_axis_fig, use_container_width=True)
+st.plotly_chart(dual_axis_fig, use_container_width=True)
