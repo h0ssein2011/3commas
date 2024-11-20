@@ -67,6 +67,6 @@ with col2:
 st.markdown("<hr style='border: 2px solid #00B0A3;'>", unsafe_allow_html=True)
 # 3. Average Volume per User
 monthly_avg_volume = df_filtered.groupby('month')['usd_amount'].mean()
-fig_avg_volume = create_stacked_bar_chart(monthly_avg_volume.to_frame(), 'Average Volume per User', 'Average Volume')
+fig_avg_volume = create_stacked_bar_chart(monthly_avg_volume.to_frame(), 'Average Volume per User', 'Average Volume($)')
 st.plotly_chart(fig_avg_volume)
 
