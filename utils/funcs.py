@@ -74,7 +74,7 @@ def create_stacked_bar_chart(data, title, yaxis_title,percent=False):
         if percent:
             text=data[segment].round(1).astype(str)+'%'
         else:
-            text=data[segment].round(1)
+            text=data[segment].round(1).apply(format_number)
         fig.add_trace(go.Bar(
             x=data.index.strftime('%b %Y'),
             y=data[segment],
